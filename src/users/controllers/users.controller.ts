@@ -1,27 +1,69 @@
-import { Controller, Delete, Get, HttpCode, HttpStatus, Module, Post, Put } from "@nestjs/common";
-import { UsersService } from "../services";
+import {
+  Body,
+  ClassSerializerInterceptor,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Module,
+  Param,
+  Post,
+  Put,
+  Query,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
+import { UsersService } from '../services';
+import { PageOptionsDto } from '../dto/page-option.dto';
+import { UserDto } from '../dto/user.dto';
+import { UpdateUserDto } from '../dto/update-user.dto';
+import { AccessGuard } from '../guards/access.guard';
+import { GetUser } from '../decorators/get-user';
 
-@Controller("user")
+@Controller('users')
+@UseInterceptors(ClassSerializerInterceptor)
 export class UsersController {
-    constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) {}
 
-    @Post()
-    @HttpCode(HttpStatus.OK)
-    create(){}
+  @Post()
+  @HttpCode(HttpStatus.CREATED)
+  async create(@Body() userDto: UserDto) {
+    return this.usersService.create(userDto);
+  }
 
-    @Get()
-    @HttpCode(HttpStatus.OK)
-    getUsers(){}
+  @Get()
+  @HttpCode(HttpStatus.OK)
+  async getUsers(@Query() pageOptionsDto: PageOptionsDto) {
+    return this.usersService.getUsers(pageOptionsDto);
+  }
 
-    @Get(":id")
-    @HttpCode(HttpStatus.OK)
-    getUser(){}
+  @Get("me")
+  @UseGuards(AccessGuard)
+  @HttpCode(HttpStatus.OK)
+  async getMe(@GetUser() user: any) {
+    return this.usersService.getUser(+user.id)
+  }
 
-    @Put(":id")
-    @HttpCode(HttpStatus.OK)
-    updateUser(){}
+  @Get(':id')
+  @HttpCode(HttpStatus.OK)
+  async getUser(@Param('id') id: string) {
+    return this.usersService.getUser(+id);
+  }
 
-    @Delete(":id")
-    @HttpCode(HttpStatus.NO_CONTENT)
-    delete(){}
+
+  @Put(':id')
+  @HttpCode(HttpStatus.OK)
+  async updateUser(
+    @Body() updatedUserDto: UpdateUserDto,
+    @Param('id') id: string,
+  ) {
+    return this.usersService.updateUser(updatedUserDto, +id);
+  }
+
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async delete(@Param("id") id:string) {
+    return this.usersService.deleteUser(+id)
+  }
 }

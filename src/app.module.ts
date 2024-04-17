@@ -2,6 +2,9 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from "@nestjs/typeorm"
 import { UsersModule } from './users/users.module';
+import { User } from './users/entities';
+import { ErrorHandlerModule } from './error-handler/error-handler.module';
+
 
 
 @Module({
@@ -15,14 +18,17 @@ import { UsersModule } from './users/users.module';
 				username: process.env.DB_USERNAME,
 				password: process.env.DB_PASSWORD,
 				database: process.env.DB_NAME,
-        entities:[],
-        synchronize: process.env.NODE_ENV === "development",
+        entities:[
+          User,
+        ],
+        synchronize: true,
       }),
     }),
     ConfigModule.forRoot({
       isGlobal:true
     }),
-    UsersModule
+    UsersModule,
+    ErrorHandlerModule
   ],
   controllers: [],
   providers: [],
