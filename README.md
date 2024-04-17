@@ -24,15 +24,29 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Welcome to Test.Fanisi Backend. Let's get you up and running in a minute.
 
 ## Installation
 
 ```bash
 $ yarn install
 ```
+## Initial Setup
+Create `.env` file with such information:
+```py
+# your database
+DB_HOST = "localhost"
+DB_PORT = 5432
+DB_USERNAME = "postgres"
+DB_PASSWORD = "password"
+DB_NAME = "test_fanisi"
 
-## Running the app
+
+APP_PORT = 4000
+
+JWT_SECRET="sometough_secret"
+```
+## Your'e good to go! >> Running the app
 
 ```bash
 # development
